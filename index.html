@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Elevate Portal Alumni Tour</title>
+<meta name="description" content="An interactive tour of elevate.iit.edu for Illinois Tech alumni, prepared for IIT-4A (African American Alumni Association of Illinois Tech).">
+<style>
+:root{
+  --scarlet:#C8102E; --scarlet-dk:#9d0c24; --ink:#0a0a0a; --gray:#8a8d8f; --gray-lt:#d0d3d4;
+  --paper:#ffffff; --glass:rgba(10,10,10,.78); --glass-2:rgba(255,255,255,.06); --line:rgba(255,255,255,.14);
+  --text:#f4f4f4; --muted:#c3c6c8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--ink);color:var(--text);font:16px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;overflow-x:hidden}
+a{color:#fff}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;line-height:1.12;text-wrap:balance}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+/* Background photos */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+.bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease;filter:grayscale(.25) contrast(1.05)}
+.bg img.on{opacity:.42}
+.bg::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(10,10,10,.92) 0%,rgba(10,10,10,.72) 45%,rgba(200,16,46,.35) 100%)}
+
+/* Layout */
+.app{position:relative;z-index:1;display:grid;grid-template-columns:290px 1fr;min-height:100vh}
+header.top{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 28px;border-bottom:1px solid var(--line);background:rgba(10,10,10,.6);backdrop-filter:blur(6px);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;flex-wrap:wrap}
+.lockup{display:flex;align-items:stretch;text-decoration:none}
+.lockup .box{background:var(--scarlet);color:#fff;font-weight:800;letter-spacing:.08em;padding:8px 12px;font-size:14px}
+.lockup .ev{border:2px solid #fff;border-left:none;color:#fff;font-weight:700;padding:6px 12px;font-size:15px}
+.top .who{color:var(--muted);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.top .actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{background:transparent;color:#fff;border:1.5px solid var(--line);padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600}
+.btn:hover{border-color:#fff}
+.btn.red{background:var(--scarlet);border-color:var(--scarlet)}
+.btn.red:hover{background:var(--scarlet-dk)}
+
+nav.rail{padding:22px 16px 40px;border-right:1px solid var(--line);background:rgba(10,10,10,.45)}
+nav.rail ol{list-style:none;display:grid;gap:4px;counter-reset:stop}
+nav.rail button{width:100%;text-align:left;background:transparent;border:0;color:var(--muted);padding:10px 12px;border-radius:8px;display:flex;gap:12px;align-items:baseline;font-size:15px}
+nav.rail button .n{font:700 13px Georgia,serif;color:var(--gray);min-width:22px}
+nav.rail button:hover{background:var(--glass-2);color:#fff}
+nav.rail button[aria-current="step"]{background:rgba(200,16,46,.22);color:#fff;box-shadow:inset 3px 0 0 var(--scarlet)}
+nav.rail button[aria-current="step"] .n{color:#fff}
+nav.rail .star{color:var(--scarlet);font-size:12px;margin-left:auto}
+
+main{padding:36px clamp(16px,4vw,56px) 110px;min-width:0}
+.stop{display:none;max-width:1080px;animation:rise .45s ease}
+.stop.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.kicker{color:#fff;background:var(--scarlet);display:inline-block;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:5px 10px}
+.stop h2{font-size:clamp(30px,4.4vw,52px);margin:16px 0 12px}
+.lead{font-size:clamp(17px,1.6vw,20px);color:var(--muted);max-width:68ch}
+.grid{display:grid;gap:14px;margin-top:26px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:20px;min-width:0}
+.card h3{font-size:21px;margin-bottom:8px}
+.card p{color:var(--muted);font-size:15px}
+.card .why{margin-top:10px;font-size:14px;color:#fff;border-left:3px solid var(--scarlet);padding-left:10px}
+.links{list-style:none;margin-top:12px;display:grid;gap:6px}
+.links a{display:flex;justify-content:space-between;gap:10px;text-decoration:none;color:#fff;padding:8px 10px;border-radius:8px;background:var(--glass-2);font-size:14.5px}
+.links a:hover{background:rgba(200,16,46,.35)}
+.links a::after{content:"↗";color:var(--gray-lt)}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-lt);border:1px solid var(--line);padding:3px 8px;border-radius:999px;margin-bottom:10px}
+.tag.alum{color:#fff;border-color:var(--scarlet);background:rgba(200,16,46,.25)}
+.src{font-size:12.5px;color:var(--gray);margin-top:10px}
+.src a{color:var(--gray-lt)}
+
+/* Welcome */
+.hero h2{font-size:clamp(40px,6.4vw,84px)}
+.hero h2 em{font-style:normal;color:var(--scarlet);background:#fff;padding:0 .12em}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:30px}
+.stat{background:var(--glass);border:1px solid var(--line);border-top:4px solid var(--scarlet);border-radius:10px;padding:18px}
+.stat b{display:block;font:700 40px/1 Georgia,serif;color:#fff}
+.stat span{display:block;margin-top:8px;color:var(--muted);font-size:14px}
+
+/* Mock nav */
+.mocknav{margin-top:26px;background:#fff;color:var(--ink);border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.mocknav .bar{display:flex;flex-wrap:wrap;background:var(--scarlet)}
+.mocknav .bar button{background:transparent;border:0;color:#fff;font-weight:700;font-size:14.5px;padding:14px 16px}
+.mocknav .bar button[aria-expanded="true"]{background:var(--ink)}
+.mocknav .panel{padding:20px;display:none}
+.mocknav .panel.on{display:block}
+.mocknav .panel h3{font-size:22px;margin-bottom:6px;color:var(--ink)}
+.mocknav .panel p{color:#3a3d40;font-size:15px;margin-bottom:12px}
+.mocknav .chips{display:flex;flex-wrap:wrap;gap:8px}
+.mocknav .chips a{font-size:13.5px;text-decoration:none;color:var(--ink);border:1.5px solid #d0d3d4;padding:6px 10px;border-radius:999px}
+.mocknav .chips a.hi{border-color:var(--scarlet);background:#fdecef}
+.mocknav .chips a:hover{border-color:var(--ink)}
+.mocknav .hint{font-size:13px;color:#5a5e61;padding:12px 20px;border-top:1px solid #e6e7e8}
+
+/* AI coach */
+.coach{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:18px;margin-top:26px}
+.mock-btn{display:inline-flex;align-items:center;gap:10px;background:var(--scarlet);color:#fff;font-weight:800;padding:14px 22px;border-radius:6px;font-size:17px;box-shadow:0 0 0 0 rgba(200,16,46,.7);animation:pulse 2.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(200,16,46,.65)}70%{box-shadow:0 0 0 18px rgba(200,16,46,0)}100%{box-shadow:0 0 0 0 rgba(200,16,46,0)}}
+.prompts{display:grid;gap:8px;margin-top:12px}
+.prompts button{text-align:left;background:var(--glass-2);border:1px solid var(--line);color:#fff;padding:11px 14px;border-radius:10px;font-size:15px}
+.prompts button:hover{border-color:var(--scarlet)}
+.prompts button.copied{border-color:#fff;background:rgba(200,16,46,.3)}
+.chat{background:#fff;color:var(--ink);border-radius:12px;padding:18px;min-height:240px;display:flex;flex-direction:column;gap:10px}
+.chat .q{align-self:flex-end;background:var(--ink);color:#fff;padding:10px 14px;border-radius:14px 14px 2px 14px;max-width:90%;font-size:14.5px}
+.chat .a{align-self:flex-start;background:#f1f2f3;padding:10px 14px;border-radius:14px 14px 14px 2px;max-width:92%;font-size:14.5px}
+.chat .a b{color:var(--scarlet)}
+.chat .ph{color:#6b6f72;font-size:14px}
+
+/* Charts */
+.chart{background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:20px;min-width:0}
+.chart h3{font-size:20px;margin-bottom:4px}
+.chart .sub{color:var(--muted);font-size:13.5px;margin-bottom:10px}
+.chart svg{width:100%;height:auto;display:block}
+.chart svg text{font-family:"Helvetica Neue",Arial,sans-serif}
+
+/* Checklist */
+.check{list-style:none;display:grid;gap:10px;margin-top:22px}
+.check label{display:flex;gap:14px;align-items:flex-start;background:var(--glass);border:1px solid var(--line);border-radius:10px;padding:14px 16px;cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--scarlet);margin-top:2px;flex:none}
+.check b{display:block}
+.check span{color:var(--muted);font-size:14.5px}
+.check a{color:#fff}
+.progress{height:8px;background:var(--glass-2);border-radius:999px;margin-top:16px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--scarlet);transition:width .3s}
+.qrs{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px}
+.qr{background:#fff;color:var(--ink);padding:14px;border-radius:10px;text-align:center;width:220px}
+.qr img{width:190px;height:190px;display:block;margin:0 auto}
+.qr b{display:block;margin-top:8px;font-size:13px;letter-spacing:.1em}
+.contact{margin-top:22px;color:var(--muted)}
+
+/* Footer controls */
+.pager{position:fixed;left:290px;right:0;bottom:0;z-index:4;display:flex;align-items:center;gap:14px;justify-content:space-between;padding:12px clamp(16px,4vw,56px) calc(12px + env(safe-area-inset-bottom,0px));background:rgba(10,10,10,.82);border-top:1px solid var(--line);backdrop-filter:blur(6px)}
+.pager .bar{flex:1;height:5px;background:var(--glass-2);border-radius:999px;overflow:hidden}
+.pager .bar i{display:block;height:100%;background:var(--scarlet);transition:width .35s}
+.pager .count{font-size:13px;color:var(--muted);min-width:64px;text-align:center}
+
+/* Search dialog */
+dialog{margin:auto;width:min(760px,calc(100% - 32px));max-height:82vh;background:#111;color:#fff;border:1px solid var(--line);border-radius:14px;padding:0}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+.dlg-head{padding:16px;border-bottom:1px solid var(--line);display:flex;gap:10px}
+.dlg-head input{flex:1;background:#000;border:1.5px solid var(--line);color:#fff;border-radius:10px;padding:12px 14px;font-size:16px}
+.dlg-body{padding:10px 16px 18px;overflow:auto;max-height:62vh}
+.res a{display:block;text-decoration:none;padding:10px 12px;border-radius:8px}
+.res a:hover{background:rgba(200,16,46,.3)}
+.res small{display:block;color:var(--gray);font-size:12.5px}
+.credits{font-size:12px;color:var(--gray);margin-top:40px;max-width:80ch}
+.credits a{color:var(--gray-lt)}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  nav.rail{border-right:0;border-bottom:1px solid var(--line);padding:10px 16px;overflow-x:auto}
+  nav.rail ol{display:flex;gap:6px;width:max-content}
+  nav.rail button{white-space:nowrap;padding:8px 10px;font-size:14px}
+  .pager{left:0}
+  .coach{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+  <img src="img/chi1.jpg" alt="" class="on"><img src="img/chi2.jpg" alt=""><img src="img/chi3.jpg" alt=""><img src="img/chi4.jpg" alt=""><img src="img/chi5.jpg" alt=""><img src="img/chi6.jpg" alt="">
+</div>
+
+<div class="app">
+  <header class="top">
+    <a class="lockup" href="https://elevate.iit.edu/" target="_blank" rel="noopener noreferrer" aria-label="Illinois Tech Elevate portal"><span class="box">ILLINOIS TECH</span><span class="ev">Elevate</span></a>
+    <span class="who">Portal tour for IIT-4A &middot; African American Alumni Association of Illinois Tech</span>
+    <div class="actions">
+      <a class="btn" href="#stop3" id="coachJump" style="text-decoration:none;border-color:#C8102E">✦ AI Career Coach</a>
+      <button class="btn" id="openSearch" aria-haspopup="dialog">Search resources</button>
+      <button class="btn" id="fs">Full screen</button>
+      <a class="btn red" href="https://elevate.iit.edu/" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open the portal ↗</a>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Tour stops"><ol id="railList"></ol></nav>
+
+  <main id="main">
+
+    <!-- 1 Welcome -->
+    <section class="stop hero" data-title="Welcome" data-bg="0">
+      <span class="kicker">elevate.iit.edu &middot; for alumni</span>
+      <h2>Your career hub, <em>for life.</em></h2>
+      <p class="lead">elevate.iit.edu is Illinois Tech's career learning ecosystem. It's built for current students and for Illinois Tech's 80,000+ alumni around the world, and career services don't expire when you graduate.</p>
+      <div class="stats">
+        <div class="stat"><b>For life</b><span>Career coaching for alumni has "no expiration date," per the Recent Alumni hub.</span></div>
+        <div class="stat"><b>24/7</b><span>The AI Career Coach searches everything Career Services has published, any time.</span></div>
+        <div class="stat"><b>7</b><span>Main menu areas, from Career Communities to Outcomes. We'll walk each one.</span></div>
+        <div class="stat"><b>91%</b><span>of the Class of 2025 undergraduates answered the First Destination Survey.</span></div>
+      </div>
+      <p class="src">Sources: <a href="https://elevate.iit.edu/channels/alumni/" target="_blank" rel="noopener noreferrer">Recent Alumni hub</a>; <a href="https://elevate.iit.edu/undergraduates-outcomes/" target="_blank" rel="noopener noreferrer">Undergraduate Outcomes</a>. Use ← → keys or the buttons below to move through the tour.</p>
+    </section>
+
+    <!-- 2 Menu map -->
+    <section class="stop" data-title="The menu, at a glance" data-bg="1">
+      <span class="kicker">Navigation map</span>
+      <h2>Seven menus, one front door</h2>
+      <p class="lead">Click each menu below. Items marked in red are the ones alumni use most.</p>
+      <div class="mocknav" id="mocknav">
+        <div class="bar" role="tablist" aria-label="Portal main menu"></div>
+        <div class="panels"></div>
+        <div class="hint">Top bar also has: <b>Make an Appointment</b> (Handshake), <b>For Faculty &amp; Staff</b>, <b>For Employers</b>, and the red <b>Access AI Career Coach</b> button.</div>
+      </div>
+    </section>
+
+    <!-- 3 AI Career Coach -->
+    <section class="stop" data-title="AI Career Coach" data-star="1" data-bg="2">
+      <span class="kicker">Spotlight</span>
+      <h2>Meet the AI Career Coach</h2>
+      <p class="lead">The fastest way into everything on the portal. Ask a question in plain language and it finds the right page, guide or event, any time of day.</p>
+      <div class="coach">
+        <div class="card">
+          <span class="tag alum">Where to find it</span>
+          <p style="color:#fff">On the home page, look for the wide red button in the right-hand column. On every other page, a small round red button sits in the lower-right corner.</p>
+          <div style="margin:16px 0 6px"><span class="mock-btn" aria-hidden="true">✦ Access AI Career Coach</span></div>
+          <span class="tag" style="margin-top:14px">Try these prompts (click to copy)</span>
+          <div class="prompts" id="prompts"></div>
+          <p class="why">Signing in is optional, but when you're logged in, results are tuned to your profile and Career Communities.</p>
+        </div>
+        <div>
+          <div class="chat" id="chat" aria-live="polite"><p class="ph">Click a prompt to see the kind of answer the coach points you to.</p></div>
+          <div class="card" style="margin-top:14px">
+            <h3>Good to know</h3>
+            <ul class="links" style="list-style:disc;padding-left:18px;color:var(--muted);font-size:14.5px;gap:6px">
+              <li>It searches only what Career Services has published, not the open internet.</li>
+              <li>If there's no match, it says so and points you to a coach instead of guessing.</li>
+              <li>Use it to prepare for an appointment, not to replace one.</li>
+            </ul>
+            <ul class="links">
+              <li><a href="https://elevate.iit.edu/" target="_blank" rel="noopener noreferrer">Open the AI Career Coach on the portal</a></li>
+              <li><a href="https://elevate.iit.edu/blog/2026/08/18/394225/" target="_blank" rel="noopener noreferrer">How-to guide: Access Your AI Career Coach</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 Recent Alumni -->
+    <section class="stop" data-title="Recent Alumni hub" data-bg="3">
+      <span class="kicker">Community &rarr; Recent Alumni</span>
+      <h2>Your home base as an alum</h2>
+      <p class="lead">One page gathers what alumni can use today: coaching, upskilling, the alumni network and ways to stay connected.</p>
+      <div class="grid g3">
+        <div class="card"><span class="tag alum">Coaching</span><h3>One-on-one, for life</h3><p>Resume reviews, interview prep, job-search strategy and offer negotiation.</p><ul class="links"><li><a href="https://iit.joinhandshake.com/appointments" target="_blank" rel="noopener noreferrer">Book on Handshake</a></li></ul></div>
+        <div class="card"><span class="tag alum">Upskill</span><h3>Certifications</h3><p>Free AWS cloud training for recent graduates (keep your Illinois Tech email) and free industry certifications.</p><ul class="links"><li><a href="https://elevate.iit.edu/channels/aws-cloud-certifications/" target="_blank" rel="noopener noreferrer">AWS Certifications</a></li><li><a href="https://elevate.iit.edu/channels/free-industry-certifications/" target="_blank" rel="noopener noreferrer">Other Industry Certifications</a></li></ul></div>
+        <div class="card"><span class="tag alum">Network</span><h3>Stay connected</h3><p>Illinois Tech Connect, the alumni directory, and the Alumni Association.</p><ul class="links"><li><a href="https://illinoistechconnect.iit.edu/" target="_blank" rel="noopener noreferrer">Illinois Tech Connect</a></li><li><a href="https://www.iit.edu/alumni" target="_blank" rel="noopener noreferrer">Alumni Association</a></li></ul></div>
+        <div class="card"><span class="tag">Experience</span><h3>Virtual internships</h3><p>Part-time, remote, placement-supported internships open to recent graduates.</p><ul class="links"><li><a href="https://elevate.iit.edu/experiences/category/virtual-internships/" target="_blank" rel="noopener noreferrer">Virtual Internships</a></li></ul></div>
+        <div class="card"><span class="tag">Jobs</span><h3>Jobs and events</h3><p>Featured jobs and internships, plus the events calendar.</p><ul class="links"><li><a href="https://elevate.iit.edu/jobs/" target="_blank" rel="noopener noreferrer">Featured Jobs and Internships</a></li><li><a href="https://elevate.iit.edu/events/" target="_blank" rel="noopener noreferrer">Events Calendar</a></li></ul></div>
+        <div class="card"><span class="tag">Hub</span><h3>The page itself</h3><p>Bookmark it. It's the shortest path to everything above.</p><ul class="links"><li><a href="https://elevate.iit.edu/channels/alumni/" target="_blank" rel="noopener noreferrer">Recent Alumni hub</a></li></ul></div>
+      </div>
+    </section>
+
+    <!-- 5 Career Resources + data -->
+    <section class="stop" data-title="Career Resources" data-bg="4">
+      <span class="kicker">Career Resources</span>
+      <h2>Guides for every career move</h2>
+      <p class="lead">Nineteen guides live under Career Resources. These are the ones mid-career alumni reach for, because most of us change employers every few years.</p>
+      <div class="grid g2">
+        <div class="chart" id="chartTenure"></div>
+        <div class="card"><h3>Alumni favorites</h3><ul class="links" id="resFav"></ul></div>
+      </div>
+    </section>
+
+    <!-- 6 Career Communities + data -->
+    <section class="stop" data-title="Career Communities" data-bg="5">
+      <span class="kicker">Career Communities</span>
+      <h2>Six industries, curated</h2>
+      <p class="lead">Each community collects jobs, employers, events and advice for one industry. Several match the fastest-growing jobs in the country.</p>
+      <div class="grid g2">
+        <div class="chart" id="chartGrowth"></div>
+        <div class="card"><h3>Pick your community</h3><ul class="links" id="commList"></ul><p class="why">Alumni tip: open your community, then use the AI Career Coach to search within it.</p></div>
+      </div>
+    </section>
+
+    <!-- 7 Elevate Experiences -->
+    <section class="stop" data-title="Elevate Experiences" data-bg="0">
+      <span class="kicker">Elevate Experiences</span>
+      <h2>Where students build experience, and where alumni can help</h2>
+      <p class="lead">Elevate is Illinois Tech's career-readiness pathway for undergraduates. Alumni use this menu two ways: to upskill, and to open doors for students.</p>
+      <div class="grid g3" id="expGrid"></div>
+    </section>
+
+    <!-- 8 Give back + data -->
+    <section class="stop" data-title="Give back: mentor" data-bg="1">
+      <span class="kicker">Community &middot; Multicultural Population</span>
+      <h2>Your story is a career resource</h2>
+      <p class="lead">Black professionals remain underrepresented in STEM. IIT-4A members can change that one student at a time through mentoring, job shadows and employer connections.</p>
+      <div class="grid g2">
+        <div class="chart" id="chartRep"></div>
+        <div class="card">
+          <h3>Three ways to give back</h3>
+          <ul class="links">
+            <li><a href="https://elevate.iit.edu/resources/illinois-tech-mentorship-program/" target="_blank" rel="noopener noreferrer">Join the Alumni Mentorship Program</a></li>
+            <li><a href="https://elevate.iit.edu/channels/employer/" target="_blank" rel="noopener noreferrer">Recruit through For Employers</a></li>
+            <li><a href="https://elevate.iit.edu/experiences/category/job-shadowing/" target="_blank" rel="noopener noreferrer">Host a job shadow</a></li>
+            <li><a href="https://elevate.iit.edu/channels/multicultural/" target="_blank" rel="noopener noreferrer">Multicultural Population community page</a></li>
+            <li><a href="https://elevate.iit.edu/blog/2023/09/06/what-is-bridge-recruiting/" target="_blank" rel="noopener noreferrer">Bridge Recruiting (on-campus recruiting)</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 Outcomes & Chicago + remote data -->
+    <section class="stop" data-title="Outcomes and Chicago" data-bg="2">
+      <span class="kicker">Outcomes &middot; Chicago Is Your Campus Too</span>
+      <h2>See the results. Use the city.</h2>
+      <p class="lead">Outcomes shows where graduates land, from First Destination Survey data. Chicago Is Your Campus Too points to the city's museums, employers and neighborhoods as places to learn.</p>
+      <div class="grid g2">
+        <div class="chart" id="chartRemote"></div>
+        <div class="card">
+          <h3>Explore</h3>
+          <ul class="links">
+            <li><a href="https://elevate.iit.edu/undergraduates-outcomes/" target="_blank" rel="noopener noreferrer">Undergraduate Outcomes (91% surveyed, Class of 2025)</a></li>
+            <li><a href="https://elevate.iit.edu/graduates-outcomes/" target="_blank" rel="noopener noreferrer">Graduate Outcomes (90% surveyed, Class of 2025)</a></li>
+            <li><a href="https://elevate.iit.edu/channels/on-campus/" target="_blank" rel="noopener noreferrer">Chicago Is Your Campus Too</a></li>
+            <li><a href="https://elevate.iit.edu/407246-2/" target="_blank" rel="noopener noreferrer">Working Remotely guide</a></li>
+            <li><a href="https://elevate.iit.edu/channels/quantum-built-in-chicago/" target="_blank" rel="noopener noreferrer">Quantum: Built in Chicago</a></li>
+          </ul>
+          <p class="why">Remote and hybrid work has settled, not disappeared, so the Working Remotely guide applies to most degree holders.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 Get started -->
+    <section class="stop" data-title="Get started tonight" data-bg="3">
+      <span class="kicker">Your next 10 minutes</span>
+      <h2>Five things to do before you leave</h2>
+      <p class="lead">Check them off as we go.</p>
+      <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+      <ul class="check" id="check">
+        <li><label><input type="checkbox"><div><b>Bookmark elevate.iit.edu</b><span>Scan the code below or open <a href="https://elevate.iit.edu/" target="_blank" rel="noopener noreferrer">elevate.iit.edu</a>.</span></div></label></li>
+        <li><label><input type="checkbox"><div><b>Ask the AI Career Coach one question</b><span>Try: "How do I negotiate a job offer?"</span></div></label></li>
+        <li><label><input type="checkbox"><div><b>Open the Recent Alumni hub</b><span><a href="https://elevate.iit.edu/channels/alumni/" target="_blank" rel="noopener noreferrer">elevate.iit.edu/channels/alumni</a></span></div></label></li>
+        <li><label><input type="checkbox"><div><b>Sign up to mentor</b><span><a href="https://elevate.iit.edu/resources/illinois-tech-mentorship-program/" target="_blank" rel="noopener noreferrer">Alumni Mentorship Program</a></span></div></label></li>
+        <li><label><input type="checkbox"><div><b>Book a coaching session if you're planning a move</b><span><a href="https://iit.joinhandshake.com/appointments" target="_blank" rel="noopener noreferrer">Handshake appointments</a></span></div></label></li>
+      </ul>
+      <div class="qrs">
+        <div class="qr"><img src="img/qr-elevate.png" alt="QR code to elevate.iit.edu"><b>SCAN: ELEVATE PORTAL</b></div>
+        <div class="qr"><img src="img/qr-alumni.png" alt="QR code to the Recent Alumni hub"><b>SCAN: RECENT ALUMNI HUB</b></div>
+      </div>
+      <p class="contact">Career Services &middot; McCormick Tribune Campus Center, Suite 106, 3201 S State St, Chicago &middot; careerservices@illinoistech.edu &middot; 312.567.6800<br>Presented by Fred Logan, PhD, Experiential Learning Manager, Illinois Tech Career Services</p>
+      <p class="credits">Photos via Unsplash: Pedro Lastra, Max Bender, Sawyer Bengtson, Nathyn Masters, Benjamin R., Ricky Beron. Data: U.S. Bureau of Labor Statistics; Pew Research Center; WFH Research (SWAA); Illinois Tech Career Services. Portal content as of October 2026.</p>
+    </section>
+
+  </main>
+</div>
+
+<div class="pager">
+  <button class="btn" id="prev" aria-label="Previous stop">← Back</button>
+  <div class="bar" aria-hidden="true"><i id="pbar"></i></div>
+  <span class="count" id="count">1 / 10</span>
+  <button class="btn red" id="next" aria-label="Next stop">Next →</button>
+</div>
+
+<dialog id="dlg" aria-label="Search portal resources">
+  <div class="dlg-head"><input id="q" type="search" placeholder="Search every link in this tour (e.g., negotiate, mentor, AWS)" aria-label="Search"><button class="btn" id="closeDlg">Close</button></div>
+  <div class="dlg-body res" id="results"></div>
+</dialog>
+
+<script>
+const E='https://elevate.iit.edu';
+const MENU=[
+ {name:'Home',blurb:'Get Started Now and Career Services programming, including the Alumni Mentorship Program and Bridge Recruiting.',items:[
+  ['Get Started Now',E+'/407288-2/'],['Career Services Programming',E+'/407292-2/'],['Alumni Mentorship Program',E+'/resources/illinois-tech-mentorship-program/',1],['Bridge Recruiting',E+'/blog/2023/09/06/what-is-bridge-recruiting/',1],['Career Clothing Closet',E+'/resources/ccc-always-dress-for-success/'],['Elevate',E+'/channels/elevate/'],['Internships & Co-ops',E+'/channels/find-an-internship-co-op/']]},
+ {name:'Career Communities',blurb:'Six industry communities with curated jobs, employers, events and advice.',items:[
+  ['Architecture, Construction & Planning',E+'/channels/architecture-construction-planning/',1],['Consulting, Entrepreneurship & Business',E+'/channels/consulting-entrepreneurship-business/',1],['Education, Government, Human Services & Nonprofits',E+'/channels/education-government-human-services-nonprofits/',1],['Life & Health Sciences',E+'/channels/life-health-sciences/',1],['Manufacturing, Energy & Logistics',E+'/channels/manufacturing-energy-logistics/',1],['Software Engineering & Information Technology',E+'/channels/software-engineering-information-technology/',1]]},
+ {name:'Career Resources',blurb:'Nineteen how-to guides, from resumes to negotiation to remote work.',items:[
+  ['AI in Job Search',E+'/407224-2/',1],['Always Follow Up',E+'/407207-2/'],['Career Fair Prep',E+'/407230-2/'],['Career Services LinkedIn Index',E+'/resources/career_index/',1],['Design a Professional Portfolio',E+'/407232-2/'],['Explore Interests and Self Assessments',E+'/407238-2/'],['Galvin Library Career Research',E+'/409695-2/'],['Informational Interviews',E+'/407244-2/',1],['Negotiations and Offers',E+'/407245-2/',1],['Network and Make Connections',E+'/407241-2/',1],['Prepare for Interviews',E+'/407243-2/'],['Quinncia',E+'/409693-2/'],['References and Recommendation',E+'/407226-2/'],['Resumes and Cover Letters',E+'/407235-2/',1],['SMART Goals',E+'/407233-2/'],['STAR Method Guide',E+'/star-method/'],['Strategic Job Search',E+'/407242-2/',1],['Verification of Employment Eligibility',E+'/e-verify-search/'],['Working Remotely',E+'/407246-2/',1]]},
+ {name:'Elevate Experiences',blurb:'The career-readiness pathway: courses, certifications, research, job simulations and more.',items:[
+  ['What are Elevate Experiences?',E+'/channels/what-are-elevate-experiences/'],['Career Pathway Courses',E+'/channels/curriculum-based-pathways/'],['Global Career Accelerator','https://careeraccelerator.iit.edu/',1],['Virtual Internships',E+'/experiences/category/virtual-internships/',1],['AWS Certifications',E+'/channels/aws-cloud-certifications/',1],['Chicago Is Your Campus Too',E+'/channels/on-campus/'],['Events Calendar',E+'/events/',1],['Featured Jobs and Internships',E+'/jobs/',1],['Incubators and Accelerators',E+'/experiences/category/incubators-accelerators-startup-studios/',1],['Job Shadows',E+'/experiences/category/job-shadowing/',1],['Job Simulations',E+'/experiences/category/job-simulations/'],['Other Industry Certifications',E+'/channels/free-industry-certifications/',1],['Healthcare & Health Tech Experiences',E+'/pre-med-pre-health-roadmap/'],['Quantum: Built in Chicago',E+'/channels/quantum-built-in-chicago/'],['Elevate Electives',E+'/channels/optional-elevate-experiences/']]},
+ {name:'Outcomes',blurb:'Where graduates land, from the First Destination Survey.',items:[['Undergraduate Outcomes',E+'/undergraduates-outcomes/',1],['Graduate Outcomes',E+'/graduates-outcomes/',1]]},
+ {name:'Community',blurb:'Hubs for specific communities, including Recent Alumni and Multicultural Population.',items:[
+  ['Recent Alumni',E+'/channels/alumni/',1],['Multicultural Population',E+'/channels/multicultural/',1],['Athletes',E+'/channels/athletes/'],['Career Resources for All Abilities',E+'/channels/career-resources-for-all-abilities/'],['Commuter Students',E+'/channels/commuter/'],['International Student Hub',E+'/channels/international/'],['Plus One',E+'/channels/plus-one/'],['Pride & Professional Community',E+'/channels/lgbtq/'],['Transfer Student Hub',E+'/channels/transfer-students/'],['Veterans & Military Hub',E+'/channels/veterans/',1],['Women',E+'/channels/women/']]},
+ {name:'About Us',blurb:'Meet the career coaches and find people across Illinois Tech.',items:[['Meet our Team',E+'/career-coaches/',1],['Illinois Tech Directory','https://www.iit.edu/directory/people']]}
+];
+const PROMPTS=[
+ ['How do I negotiate a job offer?','<b>Negotiations and Offers</b> guide, plus a nudge to book a coach on Handshake before you respond to an offer.'],
+ ['What career fairs are coming up, and how should I prepare?','The <b>Events Calendar</b> filtered to career fairs, and the <b>Career Fair Prep</b> guide.'],
+ ['Where is the résumé template, and is there an example?','<b>Resumes and Cover Letters</b>, with templates and examples.'],
+ ['How can I mentor Illinois Tech students?','The <b>Alumni Mentorship Program</b> page and how to sign up.'],
+ ['Are there free certifications I can take as an alum?','<b>AWS Certifications</b> (for recent graduates) and <b>Other Industry Certifications</b>.']
+];
+const stops=[...document.querySelectorAll('.stop')];
+const rail=document.getElementById('railList');
+stops.forEach((s,i)=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<span class="n">${String(i+1).padStart(2,'0')}</span><span>${s.dataset.title}</span>${s.dataset.star?'<span class="star">★ highlight</span>':''}`;b.onclick=()=>go(i);li.appendChild(b);rail.appendChild(li)});
+const bgs=[...document.querySelectorAll('.bg img')];
+let cur=0;
+function go(i){cur=Math.max(0,Math.min(stops.length-1,i));stops.forEach((s,j)=>s.classList.toggle('on',j===cur));[...rail.querySelectorAll('button')].forEach((b,j)=>{if(j===cur)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
+ const k=+stops[cur].dataset.bg||0;bgs.forEach((im,j)=>im.classList.toggle('on',j===k));
+ document.getElementById('pbar').style.width=((cur+1)/stops.length*100)+'%';document.getElementById('count').textContent=`${cur+1} / ${stops.length}`;
+ try{history.replaceState(null,'','#stop'+(cur+1))}catch(e){} window.scrollTo({top:0,behavior:'smooth'});}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(document.getElementById('dlg').open)return;if(e.target.matches('input'))return;if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);if(e.key==='/'){e.preventDefault();openSearch()}});
+const m=location.hash.match(/stop(\d+)/);go(m?+m[1]-1:0);
+
+/* mock nav */
+const bar=document.querySelector('#mocknav .bar'),panels=document.querySelector('#mocknav .panels');
+MENU.forEach((mm,i)=>{const b=document.createElement('button');b.textContent=mm.name;b.setAttribute('role','tab');b.setAttribute('aria-expanded',i===0);b.onclick=()=>openMenu(i);bar.appendChild(b);
+ const p=document.createElement('div');p.className='panel'+(i===0?' on':'');p.innerHTML=`<h3>${mm.name}</h3><p>${mm.blurb}</p><div class="chips">${mm.items.map(([t,u,h])=>`<a href="${u}" target="_blank" rel="noopener noreferrer" class="${h?'hi':''}">${t}</a>`).join('')}</div>`;panels.appendChild(p)});
+function openMenu(i){[...bar.children].forEach((b,j)=>b.setAttribute('aria-expanded',j===i));[...panels.children].forEach((p,j)=>p.classList.toggle('on',j===i))}
+
+/* prompts */
+const pr=document.getElementById('prompts'),chat=document.getElementById('chat');
+PROMPTS.forEach(([q,a])=>{const b=document.createElement('button');b.textContent='“'+q+'”';b.onclick=()=>{try{navigator.clipboard.writeText(q).catch(()=>{})}catch(e){}b.classList.add('copied');setTimeout(()=>b.classList.remove('copied'),1200);chat.innerHTML=`<div class="q">${q}</div><div class="a">The coach points you to: ${a}</div><p class="ph">Copied. Paste it into the AI Career Coach on elevate.iit.edu.</p>`};pr.appendChild(b)});
+
+/* lists */
+const fav=['Negotiations and Offers','Strategic Job Search','Network and Make Connections','Informational Interviews','AI in Job Search','Career Services LinkedIn Index','Working Remotely','Resumes and Cover Letters'];
+const allItems=MENU.flatMap(mm=>mm.items.map(([t,u])=>({t,u,menu:mm.name})));
+document.getElementById('resFav').innerHTML=fav.map(f=>{const it=allItems.find(x=>x.t===f);return `<li><a href="${it.u}" target="_blank" rel="noopener noreferrer">${f}</a></li>`}).join('');
+document.getElementById('commList').innerHTML=MENU[1].items.map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener noreferrer">${t}</a></li>`).join('');
+const EXP=[['Upskill','AWS Certifications','Free cloud training for recent graduates.',E+'/channels/aws-cloud-certifications/'],['Upskill','Other Industry Certifications','Free certifications with no prerequisites.',E+'/channels/free-industry-certifications/'],['Upskill','Global Career Accelerator','Career accelerator courses with industry partners.','https://careeraccelerator.iit.edu/'],['Open doors','Job Shadows','Host a student for a day in your role.',E+'/experiences/category/job-shadowing/'],['Open doors','Incubators and Accelerators','Connect founders and students to Chicago’s startup ecosystem.',E+'/experiences/category/incubators-accelerators-startup-studios/'],['Open doors','Featured Jobs and Internships','Share openings at your company with students and alumni.',E+'/jobs/']];
+document.getElementById('expGrid').innerHTML=EXP.map(([tag,t,d,u])=>`<div class="card"><span class="tag ${tag==='Open doors'?'alum':''}">${tag}</span><h3>${t}</h3><p>${d}</p><ul class="links"><li><a href="${u}" target="_blank" rel="noopener noreferrer">Open</a></li></ul></div>`).join('');
+
+/* checklist */
+const boxes=[...document.querySelectorAll('#check input')];boxes.forEach(b=>b.onchange=()=>{document.getElementById('prog').style.width=(boxes.filter(x=>x.checked).length/boxes.length*100)+'%'});
+
+/* charts (inline SVG drawn from data) */
+const S='var(--scarlet)';
+function hbar(el,{title,sub,rows,max,unit,hi,src}){
+ const W=560,rowH=40,L=232,H=rows.length*rowH+20;
+ let g='';rows.forEach((r,i)=>{const y=10+i*rowH,w=(W-L-70)*r[1]/max,c=hi(r)?'#C8102E':'#8a8d8f';
+  g+=`<text x="${L-10}" y="${y+22}" text-anchor="end" font-size="14" fill="#f4f4f4">${r[0]}</text><rect x="${L}" y="${y+6}" width="${w}" height="24" rx="3" fill="${c}"><title>${r[0]}: ${r[1]}${unit}</title></rect><text x="${L+w+8}" y="${y+23}" font-size="15" font-weight="700" fill="#fff">${r[1]}${unit}</text>`});
+ el.innerHTML=`<h3>${title}</h3><p class="sub">${sub}</p><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">${g}</svg><p class="src">${src}</p>`;}
+hbar(document.getElementById('chartTenure'),{title:'Workers 25–34 stay a median of 3 years',sub:'Median years with current employer, US wage and salary workers, January 2026',rows:[['Ages 25–34',3.0],['Ages 35–44',4.7],['Ages 45–54',7.0],['Ages 55–64',9.6],['Ages 65+',9.9],['All workers 16+',4.1]],max:10,unit:' yrs',hi:r=>r[0]==='Ages 25–34',src:'Source: <a href="https://www.bls.gov/news.release/archives/tenure_09242026.htm" target="_blank" rel="noopener noreferrer">U.S. Bureau of Labor Statistics, Employee Tenure, Sept 24, 2026</a>.'});
+hbar(document.getElementById('chartGrowth'),{title:'Data scientists: 35% projected job growth',sub:'Projected employment growth 2025–35, selected fast-growing occupations, with matching Career Community',rows:[['Nurse practitioners',41],['Data scientists',35],['Health services managers',24],['Computer & info research',22],['Info security analysts',21],['Physician assistants',21]],max:45,unit:'%',hi:r=>r[0]==='Data scientists',src:'Source: <a href="https://www.bls.gov/ooh/fastest-growing.htm" target="_blank" rel="noopener noreferrer">BLS Occupational Outlook Handbook, Fastest Growing Occupations</a>. Health roles map to Life &amp; Health Sciences; computing roles to Software Engineering &amp; IT.'});
+(function(){const el=document.getElementById('chartRep');const rows=[['Share of STEM workers',9,'Share of all workers',11],['Share of STEM bachelor’s degrees',7,'Share of all bachelor’s degrees',10]];
+ const W=560,L=20,R=540,x=v=>L+(R-L)*v/15;let g=`<line x1="${x(0)}" x2="${x(15)}" y1="150" y2="150" stroke="#555"/>`;[0,5,10,15].forEach(v=>g+=`<text x="${x(v)}" y="170" text-anchor="middle" font-size="12" fill="#a0a3a5">${v}%</text>`);
+ rows.forEach((r,i)=>{const y=40+i*60;g+=`<text x="${L}" y="${y-12}" font-size="14" fill="#f4f4f4">${r[0]} vs. ${r[2].toLowerCase()}</text><line x1="${x(r[1])}" x2="${x(r[3])}" y1="${y}" y2="${y}" stroke="#8a8d8f" stroke-width="3"/><circle cx="${x(r[3])}" cy="${y}" r="9" fill="#8a8d8f"><title>${r[2]}: ${r[3]}%</title></circle><circle cx="${x(r[1])}" cy="${y}" r="10" fill="#C8102E"><title>${r[0]}: ${r[1]}%</title></circle><text x="${x(r[1])-14}" y="${y+5}" text-anchor="end" font-size="15" font-weight="700" fill="#fff">${r[1]}%</text><text x="${x(r[3])+14}" y="${y+5}" font-size="15" font-weight="700" fill="#c3c6c8">${r[3]}%</text>`});
+ el.innerHTML=`<h3>Black workers: 9% of STEM jobs, 11% of all jobs</h3><p class="sub">Red = STEM; gray = all workers or all degrees. Workforce from 2017–19 ACS; degrees from 2017–18.</p><svg viewBox="0 0 ${W} 180" role="img" aria-label="Black representation in STEM jobs and degrees">${g}</svg><p class="src">Source: <a href="https://www.pewresearch.org/fact-tank/2021/04/14/6-facts-about-americas-stem-workforce-and-those-training-for-it/" target="_blank" rel="noopener noreferrer">Pew Research Center, April 14, 2021</a>.</p>`})();
+(function(){const el=document.getElementById('chartRemote');const yrs=[2020,2023,2024,2025,2026];const ser=[['Graduate degree',[59.0,36.0,36.0,34.5,32.7],1],['4-year degree',[54.5,34.8,33.8,33.2,30.8],0],['High school or less',[31.4,20.1,20.3,20.8,19.1],0]];
+ const W=560,H=230,L=40,R=380,T=20,B=190,x=y=>L+(y-2020)/6*(R-L),y=v=>B-v/65*(B-T);let g='';[0,20,40,60].forEach(v=>g+=`<line x1="${L}" x2="${R}" y1="${y(v)}" y2="${y(v)}" stroke="#333"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#a0a3a5">${v}%</text>`);
+ yrs.forEach(yy=>g+=`<text x="${x(yy)}" y="${B+18}" text-anchor="middle" font-size="12" fill="#a0a3a5">${yy}</text>`);
+ const off=[-6,8,4];ser.forEach(([n,v,h],k)=>{const c=h?'#C8102E':'#8a8d8f',op=k===2?.55:1;g+=`<path d="M${x(2020)},${y(v[0])} L${x(2023)},${y(v[1])}" stroke="${c}" stroke-opacity="${op}" stroke-width="2.5" stroke-dasharray="5 5" fill="none"/><path d="M${yrs.slice(1).map((yy,i)=>x(yy)+','+y(v[i+1])).join(' L')}" stroke="${c}" stroke-opacity="${op}" stroke-width="3" fill="none"/>`;v.forEach((vv,i)=>g+=`<circle cx="${x(yrs[i])}" cy="${y(vv)}" r="4" fill="${c}" fill-opacity="${op}"><title>${n}, ${yrs[i]}: ${vv}%</title></circle>`);g+=`<text x="${R+8}" y="${y(v[4])+off[k]}" font-size="12.5" font-weight="700" fill="${h?'#fff':'#c3c6c8'}">${Math.round(v[4])}% ${n}</text>`});
+ el.innerHTML=`<h3>Remote work settled near a third of workdays for degree holders</h3><p class="sub">Share of full paid workdays worked from home, US. Dashed = 2021–22 not in this release.</p><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Work from home share by education, 2020 to 2026">${g}</svg><p class="src">Source: <a href="https://wfhresearch.com/wp-content/uploads/2026/08/WFHResearch_updates_September2026.pdf" target="_blank" rel="noopener noreferrer">WFH Research, Survey of Working Arrangements and Attitudes, Sept 2026 update</a>.</p>`})();
+
+/* search */
+const dlg=document.getElementById('dlg'),q=document.getElementById('q'),res=document.getElementById('results');
+const extra=[{t:'Book a career coach (Handshake)',u:'https://iit.joinhandshake.com/appointments',menu:'Top bar'},{t:'AI Career Coach how-to',u:E+'/blog/2026/08/18/394225/',menu:'Spotlight'},{t:'Illinois Tech Connect',u:'https://illinoistechconnect.iit.edu/',menu:'Recent Alumni'},{t:'For Employers',u:E+'/channels/employer/',menu:'Top bar'},{t:'Alumni Association',u:'https://www.iit.edu/alumni',menu:'Recent Alumni'}];
+const idx=[...allItems,...extra];
+function render(){const s=q.value.trim().toLowerCase();const hits=idx.filter(i=>!s||(i.t+' '+i.menu).toLowerCase().includes(s));res.innerHTML=hits.length?hits.map(i=>`<a href="${i.u}" target="_blank" rel="noopener noreferrer">${i.t}<small>${i.menu}</small></a>`).join(''):'<p style="color:#a0a3a5;padding:10px">No match. Try the AI Career Coach on elevate.iit.edu.</p>'}
+function openSearch(){render();dlg.showModal();q.focus()}
+document.getElementById('openSearch').onclick=openSearch;document.getElementById('closeDlg').onclick=()=>dlg.close();q.oninput=render;
+document.getElementById('coachJump').onclick=e=>{e.preventDefault();go(2)};
+document.getElementById('fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+</script>
+</body>
+</html>
